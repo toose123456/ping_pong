@@ -37,15 +37,44 @@ run = True
 finish = False
 FPS = 60
 clock = time.Clock()
-boll = GameSprite('asteroid.png',250, 250, 10, 50 ,50)
+ball = GameSprite('asteroid.png',250, 250, 10, 50 ,50)
 racet1=Player('bullet.png', 0, 100, 10, 50, 170)
 racet2=Player('bullet.png', 650, 100, 10, 50, 170)
+finish=False
+font.init()
+font1 = font.Font(None, 35)
+lose1 = font1.render(
+    'PLAYER 1 LOSE!', True, (180, 0, 0))
+lose2= font1.render(
+    'PLAYER 2 LOSE!', True, (180, 0, 0))
+speed_x = 3
+speed_y = 3
+
+
 while run:
     for e in event.get():
         if e.type == QUIT:
             run = False
+    
     window.blit(background,(0, 0))
-    boll.reset()
+    if finish != True:
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
+
+    if ball.rect.y > win_height-70 or ball.rect.y < 0 :
+        speed_y *= -1
+    
+    if sprite.collide_rect(racet1, ball) or sprite.collide_rect(racet2, ball):
+        speed_x *= -1
+    
+    if ball.rect.x < 0:
+        finish = True
+        window.blit(lose1, (200, 200))
+    if ball.rect.x > win_width -50:
+        finish = True
+        window.blit(lose2, (200, 200))
+    
+    ball.reset()
     racet1.update_l()
     racet2.update_r()
     racet1.reset()
